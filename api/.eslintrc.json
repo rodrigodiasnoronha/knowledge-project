@@ -17,9 +17,8 @@
         "ecmaVersion": 11,
         "sourceType": "module"
     },
-    "plugins": [
-        "@typescript-eslint"
-    ],
+    "plugins": ["@typescript-eslint"],
     "rules": {
+        "@typescript-eslint/explicit-module-boundary-types": 0
     }
 }

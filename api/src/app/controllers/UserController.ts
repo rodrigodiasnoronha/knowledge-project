@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import prisma from '../../services/prisma';
-import generateJsonWebToken from '../utils/generateJsonWebToken';
+import { generateJsonWebToken, encryptPassword } from '../utils';
 
 class UserController {
     static store = async (request: Request, response: Response) => {
@@ -18,7 +18,12 @@ class UserController {
                 });
             }
 
-            const user = await prisma.user.create({ data });
+            const user = await prisma.user.create({
+                data: {
+                    ...data,
+                    password: encryptPassword(data.password),
+                },
+            });
 
             const token = generateJsonWebToken(user.id);
 
