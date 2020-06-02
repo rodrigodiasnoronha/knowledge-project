@@ -32,7 +32,19 @@ class UserController {
         }
     };
 
-    static index = async (request: Request, response: Response) => {};
+    static index = async (request: Request, response: Response) => {
+        const { page = 1, limit = 25 } = request.query;
+        const offset = Number(page) * Number(limit) - Number(limit);
+
+        const users = await prisma.user.findMany({
+            take: Number(limit),
+            skip: Number(offset),
+        });
+
+        const total = await prisma.user.count();
+
+        return response.json({ data: users, total, page, limit });
+    };
 
     static show = async (request: Request, response: Response) => {};
 
