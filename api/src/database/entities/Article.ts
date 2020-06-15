@@ -4,7 +4,12 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
     Column,
+    ManyToOne,
+    JoinColumn,
+    ManyToMany,
 } from 'typeorm';
+import { User } from './User';
+import { Tag } from './Tag';
 
 @Entity('articles')
 export class Article {
@@ -25,6 +30,13 @@ export class Article {
 
     @Column({ type: 'text', nullable: false })
     content: string;
+
+    @ManyToOne((type) => User, (inverseType) => Article)
+    @JoinColumn()
+    user: User;
+
+    @ManyToMany((type) => Tag, (inverseType) => Article)
+    tags: Tag[];
 
     @CreateDateColumn()
     created_at: Date;

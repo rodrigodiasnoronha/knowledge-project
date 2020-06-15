@@ -4,7 +4,9 @@ import {
     Column,
     CreateDateColumn,
     UpdateDateColumn,
+    OneToMany,
 } from 'typeorm';
+import { Article } from './Article';
 
 @Entity('users')
 export class User {
@@ -22,6 +24,9 @@ export class User {
 
     @Column({ type: 'boolean', default: false, nullable: false })
     admin: boolean;
+
+    @OneToMany((type) => Article, (inverseType) => User)
+    articles: Article[];
 
     @CreateDateColumn()
     created_at: Date;
