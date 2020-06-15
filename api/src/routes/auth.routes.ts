@@ -1,15 +1,25 @@
 import { Router } from 'express';
-import AuthController from '../app/controllers/AuthController';
-import ResetPassController from '../app/controllers/ResetPasswordController';
-import * as validators from '../app/validators';
+import { loginValidator } from '../validators';
+import { AppError } from '../errors/AppError';
+import { LoginService } from '../services/LoginService';
 
 const routes = Router();
 
-routes.route('/login').post(validators.login, AuthController.store);
+routes.post('/login', loginValidator, async (request, response) => {
+    try {
+        const loginService = new LoginService();
+        const { token, user } = await loginService.execute(request.body);
 
-routes
-    .route('/reset_password')
-    .post(validators.resetPass, ResetPassController.store)
-    .put(validators.resetPassUpdate, ResetPassController.update);
+        return response.json({ token, user });
+    } catch (err) {
+        if (err instanceof AppError) {
+            return response.status(err.statusCode).json(err);
+        }
+
+        console.log(err);
+
+        return response.status(500).json({ message: 'internal server error' });
+    }
+});
 
 export default routes;
